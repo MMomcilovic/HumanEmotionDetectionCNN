@@ -25,7 +25,7 @@ from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 # Image loading
 
 rcParams['figure.figsize'] = 20, 10
-data_path = './data/CK+48'
+data_path = './data/ck/CK+48'
 data_dir_list = os.listdir(data_path)
 
 num_epoch = 10
@@ -80,33 +80,23 @@ x_test = X_test
 def create_CNN():
     input_shape = (48, 48, 3)
     model = Sequential([
-        Conv2D(6, 5, activation='relu', kernel_initializer='he_normal', input_shape=input_shape),
+        Conv2D(32, 3, activation='relu', kernel_initializer='he_normal', input_shape=input_shape),
         MaxPooling2D(2),
-        Conv2D(16, 5, activation='relu', kernel_initializer='he_normal'),
         Conv2D(64, 3, activation='relu', kernel_initializer='he_normal'),
         MaxPooling2D(2),
+        Dropout(0.25),
+        Conv2D(128, 3, activation='relu', kernel_initializer='he_normal', input_shape=input_shape),
+        MaxPooling2D(2),
+        Conv2D(256, 3, activation='relu', kernel_initializer='he_normal'),
+        MaxPooling2D(2),
+        Dropout(0.25),
         Flatten(),
-        Dense(128, activation='relu'),
+        Dense(1024, activation='relu'),
         Dropout(0.5),
         Dense(7, activation='softmax', kernel_initializer='glorot_normal')
 
     ])
-    # model = Sequential([
-    #     Conv2D(64, 3, activation='relu', kernel_initializer='he_normal', input_shape=input_shape),
-    #     MaxPooling2D(3),
-    #     Conv2D(128, 3, activation='relu', kernel_initializer='he_normal'),
-    #     Conv2D(256, 3, activation='relu', kernel_initializer='he_normal'),
-    #     MaxPooling2D(3),
-    #     Flatten(),
-    #     Dense(256, activation='relu'),
-    #     Dropout(0.5),
-    #     Dense(7, activation='softmax', kernel_initializer='glorot_normal')
-    #
-    # ])
-
     model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='RMSprop')
-    #model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
-
     return model
 
 
